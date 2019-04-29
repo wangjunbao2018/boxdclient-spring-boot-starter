@@ -1,0 +1,101 @@
+ext {
+    // have to change
+    publishedGroupId = 'one.contentbox.boxd'
+    // `artifact` also use as and `bintray.pkg.name` for simplifying
+    artifact = 'boxdclient-spring-boot-starter'
+    libraryVersion = '0.0.1'
+    // `libraryName` also uses as `bintray.pkg.libraryName` and `bintray.pkg.version.libraryName`
+    libraryName = 'Boxd client spring boot starter plugin'
+
+    siteUrl = 'https://github.com/BOXFoundation/boxd-unpack-java'
+
+    // normally no need to change
+    repoName = 'maven'
+
+    gitUrl = "${siteUrl}.git"
+
+    developerId = 'JarvisWang'
+    developerName = 'JarvisWang'
+    developerEmail = 'wangjunbao2018@gmail.com'
+
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
+}
+
+group = publishedGroupId
+version = libraryVersion
+
+install {
+    repositories.mavenInstaller {
+        pom.project {
+            packaging 'jar'
+            groupId publishedGroupId
+            artifactId artifact
+
+            name libraryName
+            description libraryName
+            url siteUrl
+
+            licenses {
+                license {
+                    name licenseName
+                    url licenseUrl
+                }
+            }
+            developers {
+                developer {
+                    id developerId
+                    name developerName
+                    email developerEmail
+                }
+            }
+            scm {
+                connection gitUrl
+                developerConnection gitUrl
+                url siteUrl
+            }
+        }
+    }
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives jar
+    archives javadocJar
+    archives sourcesJar
+}
+
+bintray {
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+    user = properties.getProperty("bintray.user")
+    key = properties.getProperty("bintray.apikey")
+
+    configurations = ['archives']
+    pkg {
+        repo = repoName
+        name = artifact
+        desc = libraryName
+        websiteUrl = siteUrl
+        vcsUrl = gitUrl
+        licenses = allLicenses
+        dryRun = false
+        publish = true
+        override = false
+        publicDownloadNumbers = true
+        version {
+            desc = libraryName
+        }
+    }
+}

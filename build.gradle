@@ -1,0 +1,66 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+
+    dependencies {
+        classpath("com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3")
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'com.jfrog.bintray'
+
+group 'one.contentboxd.boxd'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+
+ext {
+    springBootVersion = '2.0.6.RELEASE'
+}
+
+repositories {
+    maven { url 'https://jitpack.io' }
+    jcenter()
+    mavenCentral()
+
+}
+
+configurations.all {
+    exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+}
+
+dependencies {
+    // https://mvnrepository.com/artifact/one.contentbox.boxd/boxd-client
+    implementation 'com.github.BOXFoundation:boxd-unpack-java:-SNAPSHOT'
+
+
+    compile "org.springframework.boot:spring-boot-autoconfigure:$springBootVersion",
+            "org.springframework.boot:spring-boot-actuator:$springBootVersion",
+            "org.springframework.boot:spring-boot-actuator-autoconfigure:$springBootVersion",
+            "org.springframework.boot:spring-boot-configuration-processor:$springBootVersion"
+
+    compile("org.springframework.boot:spring-boot-starter:$springBootVersion") {
+        exclude module: 'commons-logging'
+    }
+}
+
+
+allprojects {
+    tasks.withType(Javadoc) {
+        options{
+            encoding "UTF-8"
+            charSet 'UTF-8'
+            links "http://docs.oracle.com/javase/8/docs/api"
+            failOnError false
+        }
+    }
+}
+
+apply from: 'bintray.gradle'
+
+//apply from: './gradle-publish/maven-push-jar.gradle'

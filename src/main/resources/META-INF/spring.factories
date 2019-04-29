@@ -1,0 +1,1 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=one.contentbox.boxd.spring.autoconfigure.BoxdClientAutoConfiguration
